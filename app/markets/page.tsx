@@ -1,34 +1,22 @@
-"use client";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+import { WalletProvider } from "@/components/wallet";
+import MarketsApp from "@/components/markets-app";
 
-import { DashboardLayout } from "@/components/shared/layout";
-import { PageHeader } from "@/components/shared/common";
-import { MarketsTable } from "@/components/features/lending/components/MarketsTable";
-import { useAccount } from "wagmi";
+export const metadata = { title: "Markets - StellarLend" };
 
-export default function MarketsPage() {
-  const { isConnected } = useAccount();
-
-  if (!isConnected) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <p className="text-muted-foreground">Please connect your wallet to view markets.</p>
-      </div>
-    );
-  }
+export default async function Page() {
+  const messages = await getMessages({ locale: "en" });
 
   return (
-    <DashboardLayout>
-      <div className="px-6 md:px-12 pt-6 md:pt-10">
-        <PageHeader
-          title="Markets"
-          description="Compare lending and borrowing rates across all supported assets."
-          tone="light"
-        />
-
-        <section className="mt-6 pb-12">
-          <MarketsTable />
-        </section>
-      </div>
-    </DashboardLayout>
+    <NextIntlClientProvider locale="en" messages={messages}>
+      <WalletProvider>
+        <Header />
+        <main className="mx-auto max-w-6xl px-4 py-10"><MarketsApp /></main>
+        <Footer />
+      </WalletProvider>
+    </NextIntlClientProvider>
   );
 }
